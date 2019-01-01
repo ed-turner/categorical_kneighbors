@@ -78,7 +78,7 @@ class CategoricalKNNRegressor(CategoricalKNNBase):
 
     def __init__(self, **kwargs):
 
-        CategoricalKNNBase.__init__(**kwargs)
+        CategoricalKNNBase.__init__(self, **kwargs)
 
     def fit_predict(self, df_train, df_test, y):
         return self._fit_predict(df_train, df_test, y)
@@ -88,7 +88,7 @@ class CategoricalKNNClassifier(CategoricalKNNBase):
 
     def __init__(self, **kwargs):
 
-        CategoricalKNNBase.__init__(**kwargs)
+        CategoricalKNNBase.__init__(self, **kwargs)
 
     def fit_predict(self, df_train, df_test, y):
 

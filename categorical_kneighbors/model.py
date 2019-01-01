@@ -55,14 +55,7 @@ class CategoricalKNNBase:
 
         return res_dict
 
-
-class CategoricalKNNRegressor(CategoricalKNNBase):
-
-    def __init__(self, **kwargs):
-
-        CategoricalKNNBase.__init__(**kwargs)
-
-    def fit_predict(self, df_train, df_test, y):
+    def _fit_predict(self, df_train, df_test, y):
 
         assert df_train.shape[0] == y.shape[0]
 
@@ -81,6 +74,16 @@ class CategoricalKNNRegressor(CategoricalKNNBase):
         return test_pred
 
 
+class CategoricalKNNRegressor(CategoricalKNNBase):
+
+    def __init__(self, **kwargs):
+
+        CategoricalKNNBase.__init__(**kwargs)
+
+    def fit_predict(self, df_train, df_test, y):
+        return self._fit_predict(df_train, df_test, y)
+
+
 class CategoricalKNNClassifier(CategoricalKNNBase):
 
     def __init__(self, **kwargs):
@@ -89,18 +92,18 @@ class CategoricalKNNClassifier(CategoricalKNNBase):
 
     def fit_predict(self, df_train, df_test, y):
 
-        assert df_train.shape[0] == y.shape[0]
+        if 2 < np.unique(y).shape[0]:
 
-        res_dict = self._fit(df_train, df_test)
+            y_one_hot_encode = np.zeros((y.shape[0], int(np.max(y)) + 1))
 
-        test_pred = np.zeros((df_test.shape[0],))
+            y_one_hot_encode[np.arange(y.shape[0]), y] = 1
 
-        for key in res_dict.keys():
+            probs = self._fit_predict(df_train, df_test, y_one_hot_encode)
 
-            train_indices = res_dict[key]['train_indices']
-            test_indices = res_dict[key]['test_indices']
-            closet_indices = res_dict[key]['closest_preds']
+            probs = np.dot(np.diag(probs.sum(axis=1) ** -1.0), probs)
 
-            test_pred[test_indices] = np.round(y[train_indices][closet_indices].mean(axis=1))
+            return np.argmax(probs, axis=1)
+        else:
+            probs = self._fit_predict(df_train, df_test, y)
 
-        return test_pred
+            return np.round(probs)

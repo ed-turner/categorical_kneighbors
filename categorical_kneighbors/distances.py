@@ -29,9 +29,10 @@ def cosine_distance(mat_A, mat_B):
     n_A = mat_A.shape[0]
     n_B = mat_B.shape[0]
 
-    row_norm_A = (np.array([np.linalg.norm(mat_A[i, :]) for i in range(n_A)]) + 1e-4) ** -1.0
-    row_norm_B = (np.array([np.linalg.norm(mat_B[i, :]) for i in range(n_B)]) + 1e-4) ** -1.0
+    row_norm_A = (np.array([np.sqrt(np.sum(np.square(mat_A[i, :]))) for i in range(n_A)]) + 1e-4) ** -1.0
+    row_norm_B = (np.array([np.sqrt(np.sum(np.square(mat_B[i, :]))) for i in range(n_B)]) + 1e-4) ** -1.0
 
-    return 1.0 - np.dot(np.dot(np.diag(row_norm_A), mat_A), np.dot(np.diag(row_norm_B), mat_B).T)
+    return 1.0 - np.dot(np.dot(np.diag(row_norm_A), mat_A),
+                        np.dot(np.diag(row_norm_B), mat_B).T)
 
 

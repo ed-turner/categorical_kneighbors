@@ -10,7 +10,7 @@ with open("README.md") as f:
 
 LICENSE = ''
 
-REQUIREMENTS = ['pandas==0.23.4', 'numpy==1.15.4', 'numba==0.41.0']
+REQUIREMENTS = ['pandas==0.23.4', 'numpy==1.15.4', 'numba==0.41.0', 'scipy==1.2.0']
 
 setup(
     name='categorical_kneighbors',
